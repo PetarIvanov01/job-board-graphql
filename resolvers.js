@@ -1,23 +1,11 @@
+import { getJobs } from "./db/jobs.js";
+
 export const resolvers = {
   Query: {
-    jobs: () => {
-      return [
-        {
-          id: "test-id-1",
-          title: "The Title 1",
-          description: "The description",
-        },
-        {
-          id: "test-id-2",
-          title: "The Title 2",
-          description: "The description",
-        },
-        {
-          id: "test-id-3",
-          title: "The Title 3",
-          description: "The description",
-        },
-      ];
-    },
+    jobs: () => getJobs(),
+  },
+
+  Job: {
+    date: (job) => job.createdAt.slice(0, "yyyy-mm-dd".length),
   },
 };
