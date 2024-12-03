@@ -48,11 +48,17 @@ export async function getCompany(companyId) {
       company(id: $companyId) {
         name
         description
+        jobs {
+          id
+          date
+          title
+        }
       }
     }
   `;
 
   const variables = { companyId };
   const data = await client.request(document, variables);
+
   return data.company;
 }
