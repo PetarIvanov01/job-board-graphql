@@ -21,6 +21,7 @@ export async function getJobs() {
   const data = await client.request(document);
   return data.jobs;
 }
+
 export async function getJob(jobId) {
   const document = gql`
     query getJob($jobId: ID!) {
@@ -28,6 +29,7 @@ export async function getJob(jobId) {
         id
         date
         title
+        description
         company {
           id
           name
@@ -39,6 +41,7 @@ export async function getJob(jobId) {
   const variables = { jobId };
 
   const data = await client.request(document, variables);
+
   return data.job;
 }
 
@@ -61,4 +64,56 @@ export async function getCompany(companyId) {
   const data = await client.request(document, variables);
 
   return data.company;
+}
+
+export async function createJob({ title, description }) {
+  const document = gql`
+    mutation createJob($input: CreateJobInput!) {
+      job: createJob(input: $input) {
+        id
+        date
+        title
+        company {
+          id
+          name
+        }
+      }
+    }
+  `;
+
+  const variables = {
+    input: {
+      title,
+      description,
+    },
+  };
+
+  const data = await client.request(document, variables);
+  return data.job;
+}
+
+export async function deleteJob({ title, description }) {
+  const document = gql`
+    mutation createJob($input: CreateJobInput!) {
+      job: createJob(input: $input) {
+        id
+        date
+        title
+        company {
+          id
+          name
+        }
+      }
+    }
+  `;
+
+  const variables = {
+    input: {
+      title,
+      description,
+    },
+  };
+
+  const data = await client.request(document, variables);
+  return data.job;
 }
