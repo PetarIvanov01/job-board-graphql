@@ -38,20 +38,41 @@ export const resolvers = {
   },
 
   Mutation: {
-    createJob: (_, { input }) => {
+    createJob: (_, { input }, { user }) => {
       // Todo change hardcoded companyId
+      if (!user) {
+        throw new GraphQLError("Not Authorized to create a Job");
+      }
       const { description, title } = input;
       return createJob({
-        companyId: "FjcJCHJALA4i",
+        companyId: user.companyId,
         description,
         title,
       });
     },
-    updateJob: (_, { input }) => {
+    updateJob: (_, { input }, { user }) => {
+      // Todo change hardcoded companyId
+      if (!user) {
+        throw new GraphQLError("Not Authorized to create a Job");
+      }
       const { jobId, description, title } = input;
-      return updateJob({ id: jobId, title, description });
+      const job = updateJob({ id: jobId, title, description }, user.companyId);
+      if (!job) {
+        throw new GraphQLError("No Job Found");
+      }
+      return job;
     },
-    deleteJob: (_, { input: { jobId } }) => deleteJob(jobId),
+
+    deleteJob: async (_, { input: { jobId } }, { user }) => {
+      if (!user) {
+        throw new GraphQLError("Not Authorized to create a Job");
+      }
+      const job = await deleteJob(jobId);
+      if (!job) {
+        throw new GraphQLError("No Job Found");
+      }
+      return job;
+    },
   },
 
   Company: {
