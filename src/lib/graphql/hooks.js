@@ -21,16 +21,24 @@ export function useJob(jobId) {
   return { job: data?.job, error: Boolean(error), loading };
 }
 
-export function useJobs() {
+export function useJobs(limit, offset) {
   const { data, error, loading } = useQuery(jobsQuery, {
     fetchPolicy: "network-only",
+    variables: {
+      limit,
+      offset,
+    },
   });
-
-  return { jobs: data?.jobs, error: Boolean(error), loading };
+  return {
+    totalCount: data?.jobs.totalCount,
+    jobs: data?.jobs.items,
+    error: Boolean(error),
+    loading,
+  };
 }
 
 export function useCreateJob() {
-  const [mutate, {loading}] = useMutation(createJobMutation);
+  const [mutate, { loading }] = useMutation(createJobMutation);
 
   const createJob = async (title, description) => {
     const { data } = await mutate({
@@ -49,6 +57,6 @@ export function useCreateJob() {
 
   return {
     createJob,
-    loading
+    loading,
   };
 }
