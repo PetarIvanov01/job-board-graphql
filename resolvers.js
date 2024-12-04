@@ -39,7 +39,6 @@ export const resolvers = {
 
   Mutation: {
     createJob: (_, { input }, { user }) => {
-      // Todo change hardcoded companyId
       if (!user) {
         throw new GraphQLError("Not Authorized to create a Job");
       }
@@ -51,7 +50,6 @@ export const resolvers = {
       });
     },
     updateJob: (_, { input }, { user }) => {
-      // Todo change hardcoded companyId
       if (!user) {
         throw new GraphQLError("Not Authorized to create a Job");
       }
@@ -80,7 +78,7 @@ export const resolvers = {
   },
 
   Job: {
-    company: (job) => getCompany(job.companyId),
+    company: (job, _, { companyLoader }) => companyLoader.load(job.companyId),
     date: (job) => job.createdAt.slice(0, "yyyy-mm-dd".length),
   },
 };
